@@ -1,56 +1,174 @@
-# Welcome to your Expo app 👋
+# SuuqPOS
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Free, offline point-of-sale for Somali shops.**
 
-## Get started
+SuuqPOS turns any Android phone or tablet into a full POS system — no internet, no monthly fees, no card reader required. Built for the 85% of Somali businesses that run on mobile money (EVC Plus, Zaad, Sahal, eDahab) and cash.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## Download APK
 
-2. Start the app
+> **[Download SuuqPOS v1.0 APK](https://github.com/khaledyusuf44/suuqpos/releases)**
+>
+> Install directly on any Android device. No Play Store needed.
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## Features
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+**Inventory Management**
+- Add, edit, delete products with categories
+- Track stock levels with low-stock alerts
+- Bulk stock adjustments (in/out) with live preview
+- Search and filter by category
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+**Point of Sale**
+- Tap-to-add product grid (responsive: 2-5 columns based on screen)
+- Cart with quantity controls
+- 5 payment methods: Cash, EVC Plus, Zaad, Sahal, eDahab
+- Cash change calculator with quick-amount buttons
+- Stock validation before every sale
 
-## Get a fresh project
+**Sales & Reports**
+- Today / Week / Month summary (revenue, profit, total sales)
+- Full sales history with receipt detail
+- Share receipts via WhatsApp, Telegram, etc.
 
-When you're ready, run:
+**Security**
+- 4-digit PIN lock (SHA-256 hashed)
+- All data stored locally on device (SQLite)
+- No cloud, no tracking, no data leaves the phone
+
+**Dark Mode**
+- Light / Dark / System theme toggle
+- Persisted preference
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | React Native + Expo SDK 55 |
+| Navigation | Expo Router |
+| Database | expo-sqlite (WAL mode, foreign keys, indexed) |
+| Language | TypeScript (strict) |
+| Styling | React Native StyleSheet (dynamic theming) |
+
+---
+
+## Run Locally
 
 ```bash
-npm run reset-project
+# Clone
+git clone https://github.com/khaledyusuf44/suuqpos.git
+cd suuqpos
+
+# Install
+npm install
+
+# Start dev server
+npx expo start
+
+# Build APK locally (requires Android SDK)
+npx expo prebuild --platform android --clean
+cd android && ./gradlew assembleRelease
+# APK output: android/app/build/outputs/apk/release/app-release.apk
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+**Requirements:**
+- Node.js 18+
+- Android SDK (for local APK builds)
+- Java 17+ (for Gradle)
 
-### Other setup steps
+---
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Project Structure
 
-## Learn more
+```
+src/
+├── app/              # Expo Router entry
+│   ├── _layout.tsx   # Root layout (providers)
+│   └── index.tsx     # Auth gate
+├── constants/
+│   ├── theme.ts      # Light/Dark colors, spacing, breakpoints
+│   └── strings.ts    # Somali UI strings
+├── context/
+│   ├── auth-context.tsx   # PIN auth state
+│   ├── cart-context.tsx   # Shopping cart reducer
+│   └── theme-context.tsx  # Dark/light mode
+├── db/
+│   ├── database.ts   # SQLite connection
+│   ├── migrations.ts # Schema versions (v4)
+│   ├── shop.ts       # Shop config + PIN hashing
+│   ├── products.ts   # Product CRUD
+│   ├── categories.ts # Category CRUD
+│   └── sales.ts      # Transactions, reports
+├── screens/
+│   ├── register.tsx   # Onboarding (phone + PIN)
+│   ├── login.tsx      # PIN unlock
+│   ├── main.tsx       # Tab navigator
+│   ├── inventory.tsx  # Stock management
+│   ├── pos.tsx        # Point of sale
+│   ├── sales.tsx      # Sales history
+│   └── account.tsx    # Settings + theme toggle
+└── types/
+    └── index.ts       # TypeScript interfaces
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+---
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Database Schema
 
-## Join the community
+4 tables, 4 indices, WAL mode, foreign keys enforced:
 
-Join our community of developers creating universal apps.
+- **shop** — key-value config (phone, PIN hash, shop name, theme)
+- **categories** — product groupings (5 defaults: Cunto, Cabitaan, Guriga, Nadaafad, Kale)
+- **products** — name, price, cost, stock, category (indexed on category + stock)
+- **sales** + **sale_items** — transactional sales with profit tracking (indexed on created_at)
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+All writes wrapped in `withTransactionAsync` — no partial sales.
+
+---
+
+## Contributing
+
+We welcome contributions. Here's how:
+
+1. **Fork** the repo
+2. **Create a branch** — `git checkout -b feature/your-feature`
+3. **Make changes** — follow existing code style (TypeScript, Somali UI strings)
+4. **Test** — run `npx tsc --noEmit` for type safety
+5. **PR** — open a pull request with a clear description
+
+### Areas we need help with
+
+- CSV export of sales reports
+- Receipt sharing as image (for WhatsApp)
+- Change PIN flow
+- Haptic feedback on key actions
+- Tablet-optimized layouts (side rail, master-detail)
+- Somali language improvements
+- Better receipt templates
+
+---
+
+## Why SuuqPOS?
+
+Somalia has 17M+ people, 75% under 30, and nearly universal mobile money adoption. But most shops track sales on paper or not at all. Commercial POS systems cost $30-100/month and require internet.
+
+SuuqPOS is:
+- **Free** — no subscription, no hidden fees
+- **Offline** — works without internet, always
+- **Somali-first** — UI in Somali, built for local payment methods
+- **Mobile-first** — runs on the $80 phones shopkeepers already own
+
+---
+
+## License
+
+MIT
+
+---
+
+**Built by [Somali AI Builders](https://github.com/khaledyusuf44)** — Build with AI. Ship for Somalia.

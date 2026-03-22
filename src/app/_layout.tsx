@@ -1,16 +1,29 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { Slot } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { useColorScheme } from 'react-native';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+import { AuthProvider } from '@/context/auth-context';
+import { CartProvider } from '@/context/cart-context';
+import { ThemeProvider, useThemeMode } from '@/context/theme-context';
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+function Inner() {
+  const { isDark } = useThemeMode();
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <>
+      <StatusBar style={isDark ? 'light' : 'dark'} />
+      <Slot />
+    </>
+  );
+}
+
+export default function Root() {
+  return (
+    <AuthProvider>
+      <CartProvider>
+        <ThemeProvider>
+          <Inner />
+        </ThemeProvider>
+      </CartProvider>
+    </AuthProvider>
   );
 }
