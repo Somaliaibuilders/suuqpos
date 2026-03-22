@@ -8,7 +8,7 @@ SuuqPOS turns any Android phone or tablet into a full POS system — no internet
 
 ## Download APK
 
-> **[Download SuuqPOS v1.0 APK](https://github.com/khaledyusuf44/suuqpos/releases)**
+> **[Download SuuqPOS v1.0 APK](https://github.com/Somaliaibuilders/suuqpos/releases)**
 >
 > Install directly on any Android device. No Play Store needed.
 
@@ -61,7 +61,7 @@ SuuqPOS turns any Android phone or tablet into a full POS system — no internet
 
 ```bash
 # Clone
-git clone https://github.com/khaledyusuf44/suuqpos.git
+git clone https://github.com/Somaliaibuilders/suuqpos.git
 cd suuqpos
 
 # Install
@@ -171,4 +171,4 @@ MIT
 
 ---
 
-**Built by [Somali AI Builders](https://github.com/khaledyusuf44)** — Build with AI. Ship for Somalia.
+**Built by [Somali AI Builders](https://github.com/Somaliaibuilders)** — Build with AI. Ship for Somalia.
